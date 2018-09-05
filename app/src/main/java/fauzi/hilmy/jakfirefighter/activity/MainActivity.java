@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     JakAdapter adapter;
+    String token = "5h30dB4K4Uwuhj4KkmHmFhyeCAZ51i6PqHyQmjKfflQREW/JzPaPlYM22trruzC5";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,24 +47,23 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadData() {
         ApiInterface apiInterface = ApiClient.getInstance();
-        Call<ResponsePemadam> call = apiInterface.getPemadamStaf();
+        Call<ResponsePemadam> call = apiInterface.getPemadamStaf(token);
         call.enqueue(new Callback<ResponsePemadam>() {
             @Override
             public void onResponse(Call<ResponsePemadam> call, Response<ResponsePemadam> response) {
-                if (response.body().getStatus().equalsIgnoreCase("success")) {
-                    List<DataItem> dataItems = response.body().getData();
+                Log.d("ResponseLah", response.body().getStatus());
+                if (response.body().getStatus().equals("success")) {
                     getSupportActionBar().setSubtitle(response.body().getDinas());
-
-                    recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                    List<DataItem> dataItems = response.body().getData();
                     adapter = new JakAdapter(MainActivity.this, dataItems);
                     recyclerView.setAdapter(adapter);
-                    recyclerView.setHasFixedSize(true);
+                    recyclerView.setLayoutManager(new LinearLayoutManager(MainActivity.this));
                 }
             }
 
             @Override
             public void onFailure(Call<ResponsePemadam> call, Throwable t) {
-
+                Log.e("ErrorLah", t.getMessage());
             }
         });
     }
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
         private Context context;
         private List<DataItem> dataItems;
 
-        public JakAdapter(Context context, List<DataItem> dataitem) {
+        JakAdapter(Context context, List<DataItem> dataitem) {
             this.context = context;
             this.dataItems = dataitem;
         }

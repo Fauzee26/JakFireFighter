@@ -49,15 +49,21 @@ public class DetailActivity extends AppCompatActivity {
         alamat = getIntent().getStringExtra(E_ALAMAT);
         jabatan = getIntent().getStringExtra(jabatan);
 
-        if (!TextUtils.isEmpty(phone)) {
+        if (phone == null) {
             btnCall.setVisibility(View.GONE);
         } else {
             btnCall.setVisibility(View.VISIBLE);
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:" + phone));
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                startActivity(callIntent);
-            }
+            btnCall.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                    callIntent.setData(Uri.parse("tel:" + phone));
+                    if (callIntent.resolveActivity(getPackageManager()) != null) {
+                        startActivity(callIntent);
+                    }
+                }
+            });
+
         }
 
         txtDetailName.setText(nama);

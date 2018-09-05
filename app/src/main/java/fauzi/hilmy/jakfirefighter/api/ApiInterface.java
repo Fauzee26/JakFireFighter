@@ -6,6 +6,8 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 
 public interface ApiInterface {
-    @GET("v1/emergency/petugaspemadam/")
-    Call<ResponsePemadam> getPemadamStaf();
+    @GET("petugaspemadam")
+    Call<ResponsePemadam> getPemadamStaf(
+            @Header("Authorization") String authorization
+    );
 }
